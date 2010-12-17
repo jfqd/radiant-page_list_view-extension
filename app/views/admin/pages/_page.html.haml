@@ -14,7 +14,7 @@
               %span.title= nicify(page.send(att))
         - when 'slug'
           - unless page[att].nil?
-            - page[att] = '/' ? slug = page[att] : slug = '/' + page[att]
+            - slug = ( page[att] == '/' ? page[att] : page.parent.url + page[att] )
             - if slug.length > 29 
               - slug = slug.slice(0,13) + '...' + slug.slice(slug.length-13, slug.length)
             %span{:title => page[att]}
@@ -22,5 +22,18 @@
         - when 'class_name'
           - unless page[att].nil? 
             = page[att].slice(0,12)
+        - when 'status_name'
+          - page_status = page.status.name.downcase; host = request.env["HTTP_HOST"];
+          - if page_status == "published"
+            = link_to t(page_status), page.url, :target => "_blank", :style => "color: inherit;"
+          - else "draft"
+            - unless page.new_record?
+              - if request.remote_addr == '127.0.0.1' || request.remote_ip == '127.0.0.1'
+                = t(page_status)
+              - else
+                - dev_host = Radiant::Config['dev.host'] || ('dev.' + host)
+                - port     = request.port==80 || request.port==443 ? "" : ":#{request.port}"
+                - host_url = "http://#{h(dev_host)}#{h(port.to_s)}"
+                = link_to( "<span>#{t(page_status)}</span>", host_url + h(page.url), :target => "_blank", :style => "color: inherit;" )
         - else
           = nicify(page.send(att))

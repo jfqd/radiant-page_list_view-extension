@@ -1,12 +1,7 @@
-- #include_javascript 'admin/tablekit'
 - include_javascript 'admin/ruledtable'
 - @page_title = t('pages') + ' - ' + default_page_title
-
 .outset
   = render_region :top
-
-  - if params[:view] == 'paginated_list'
-    = will_paginate @pages
 
   %table.index.sortable{:summary=>"Sortable list of pages for the current site"}
     %thead
@@ -23,15 +18,15 @@
         %tr
           %td.empty{:colspan => list_display_attributes.length}= t('no_pages')
 
-  - if params[:view] == 'paginated_list'
-    = will_paginate @pages
-
   = render_region :bottom
 
-  - if @pages.empty?
-    #actions
-      %ul
-        %li= link_to image('plus') + " " + t("new_homepage"), new_admin_page_path
+- if @pages.empty?
+  #actions
+    %ul
+      %li= link_to image('plus') + " " + t("new_homepage"), new_admin_page_path
+- elsif params[:view] == 'paginated_list' && allowed_by_role?
+  #actions
+    = will_paginate @audits
     
 - content_for :page_css do
   :sass

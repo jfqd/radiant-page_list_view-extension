@@ -15,6 +15,8 @@ class PageListViewExtension < Radiant::Extension
     Admin::PagesController.send :include, PageListView::AdminPageControllerExtensions
     Admin::PagesController.send :helper, Admin::ListViewHelper
     admin.page.index.add :top, "page_view_toggle"
+    
+    Radiant::Config['page_list_view.roles'] = '' unless Radiant::Config['page_list_view.roles']
   end
   
   def deactivate

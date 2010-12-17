@@ -1,24 +1,33 @@
 - include_javascript 'admin/tablekit'
-%ul#page_view_toggle
-  %li#tree_view= link_or_span_unless_current(params, 'Tree View', admin_pages_path, :onclick => "Cookies.set('page_view', 'tree');")
-  %li#paginated_list= link_or_span_unless_current(params, 'Paginated List', admin_pages_path(:view => 'paginated_list'), :onclick => "Cookies.set('page_view', 'paginated_list');", :id => 'paginated_list')
-  %li#full_list= link_or_span_unless_current(params, 'Full List', admin_pages_path(:view => 'full_list'), :onclick => "Cookies.set('page_view', 'full_list');", :id => 'full_list')
-%br
+- if allowed_by_role?
+  %ul#page_view_toggle
+    %li#tree_view= link_or_span_unless_current(params, 'Tree View', admin_pages_path, :onclick => "Cookies.set('page_view', 'tree');")
+    %li#paginated_list= link_or_span_unless_current(params, 'Paginated List', admin_pages_path(:view => 'paginated_list'), :onclick => "Cookies.set('page_view', 'paginated_list');", :id => 'paginated_list')
+    %li#full_list= link_or_span_unless_current(params, 'Full List', admin_pages_path(:view => 'full_list'), :onclick => "Cookies.set('page_view', 'full_list');", :id => 'full_list')
+    - if params[:view] == 'full_list'
+      %li#search= render :partial => 'page_search'
 - content_for :page_css do
   :sass
     #page_view_toggle
-      float: left
+      background-color: #7E7E7E
+      width: 100%
+      text-align: right
       list-style: none
-      margin: 12px 0 10px 12px
-      padding: 0
+      font-size: 12px
+      padding: 10px 0 8px 0
       li
         display: inline
         margin: 0 5px 0 0
+      #search
+        margin-right: 5px
+        form
+          display: inline
       a, a:visited
-        color: black
+        color: white
+        text-decoration: none
       span
-        border: 1px solid #ffa
-        background-color: #ffd
+        color: white
+        font-weight: bold
     #tree_view
       a, span
         padding: 5px 5px 5px 25px

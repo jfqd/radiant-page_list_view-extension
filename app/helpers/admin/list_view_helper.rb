@@ -24,7 +24,7 @@ module Admin::ListViewHelper
   def nicify(value)
     case value
     when String; value.humanize
-    when Time; value.strftime(fmt="%m/%d/%Y at %I:%M %p")
+    when Time; value.strftime( fmt=I18n.t("time.formats.default") )
     else value.to_s.humanize
     end
   end
@@ -52,5 +52,10 @@ module Admin::ListViewHelper
     returning %w{page} do |classes|
       # classes << 'date-short' if att =~ /(updated|created)_(at|on)/
     end.join(" ")
+  end
+  
+  def allowed_by_role?
+    allowed_roles = Radiant::Config['page_list_view.roles'].gsub(' ','').split(',')
+    allowed_roles.any? { |role| @current_user.has_role?(role.to_s.downcase) }
   end
 end
